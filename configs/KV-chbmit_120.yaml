@@ -1,0 +1,107 @@
+use_gpu: True
+device: 4
+seed: 0
+framework: 'GCN'
+data:
+  root: 'data/'
+  data_name: 'chbmit_120'
+  loader_size: 1
+  splitter: 'rand'   #choices=['rand','fold10']
+  data_split_ratio: 0.7
+  fold_idx: 0  #'the index(<10) of fold in 10-fold validation.')
+  shuffle: False
+  one_hot: False
+  ts_length: 921600
+  mutag_x: False
+  hz: 128
+
+  splits:
+    train: 0.8
+    valid: 0.1
+    test: 0.1
+
+sampling:
+  hz: 128
+  samplingFlag: True
+  normalizeFlag: True
+  step: 2
+  ValueError_interrupt: True
+
+model:
+  type: 'GAT'
+  data_batch_size: 3
+  target_class: 2
+  out_channels: 7
+  model_save_path: 'result/model/'
+  num_layers: 3
+  num_mlp_layers: 5
+  hidden_size: 32
+  n_layers: 4
+  dropout_p: 0.8
+  pretrain_lr: 3.0e-3
+  pretrain_epochs: 100
+  from_scratch: True
+  fix_r: False
+  decay_interval: 60
+  decay_r: 0.1
+  final_r: 0.7
+  normal_coef: 0.0
+  kl_1_coef: 1.0
+  kl_2_coef: 1.0
+  GC_coef: 1.0
+  GC_delta_coef: 1.0
+  aggregators:
+    - mean
+    - min
+    - max
+    - std
+    - sum
+
+gat:
+  num_heads: 8
+  num_out_heads: 1
+  attn_drop: 0.8
+  negative_slope: 0.2
+  residual: False
+  final_dropout: 0.7
+  graph_pooling_type: "mean"
+
+
+timeseries:
+  shapelet: True
+  epochs: 50
+  shaplet_method: 'shapelets_Its'
+  K: 5
+  R: 2
+  alpha: 0.01
+  lamda: 0.01
+  eta: 0.001
+  shapelet_initialization: 'segments_centroids'
+  patience: 20
+  shaplet_outsize: 30
+  shaplet_segment: 4
+
+
+train:
+  lr: 3.0e-3
+  weight_decay: 3.0e-6
+  graph_lr: 3.0e-3
+  optimizer: "Adam"
+  final_dropout: 0.7
+  learn_eps: "store_true"
+  epochs: 150
+
+shared_config:
+  use_edge_attr: True
+  learn_edge_att: True
+  learn_edge_att_m: False
+  precision_k: 5
+  num_viz_samples: 8
+  viz_interval: 10
+  viz_norm_att: True
+  extractor_dropout_p: 0.5
+
+visual:
+  num_viz_samples: 10
+
+resultPath: 'result/'
